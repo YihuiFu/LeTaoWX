@@ -1,0 +1,100 @@
+﻿<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width,user-scalable=no">
+    @Scripts.Render("~/Scripts/jquery-1.7.1.min.js")
+    @Scripts.Render("~/Scripts/test.js")
+    <link rel="stylesheet" href="~/Content/reset.css">
+    <link rel="stylesheet" href="~/Content/style.css">
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("[tab]").click(function () {
+                $(".list_box").hide();
+                $("." + $(this).attr("tab")).show();
+            })
+            $('.text_a li').click(function () {
+                $('.text_a li').removeClass('active');
+                $(this).addClass('active');
+            })
+
+        })
+    </script>
+</head>
+
+<body>
+    <div class="m_head clearfix">
+        <img src="~/Content/images/hejin_toupiao.jpg" alt="" />
+        @RenderBody()
+
+        <section class="rules">
+            <div class="text">
+                <div class="prize">•奖项说明 </div>
+                <div class="neirong">
+                    <span style="color: #E53333; font-weight: bold;"><strong>【克拉钻戒悬赏捉拿民间厨神】</strong></span><br>
+                    冠军：获得 一克拉钻戒一枚 +冠军奖杯+厨神证书
+                    <br>
+                    亚军：获得 马尔代夫7天双人游 +亚军奖杯+厨神证书
+                    <br>
+                    季军：获得 抽油烟机灶具一套+季军奖杯+厨神证书
+                    <br>
+                    幸运奖200名：在线下各大报名点报名成功者，即可获得园汁园味蓝莓汁饮料或逗乐豆豆奶
+                    <br>
+                </div>
+                <div class="neirong">
+                    <span style="color: #E53333; font-weight: bold;"><strong>【网络投票超人气奖】</strong></span><br>
+                    一等奖：半克拉钻戒一枚+克拉厨师奖杯+超人气证书
+                    </br>
+                    二等奖：10000元美容VIP消费卡+超人气证书
+                    </br>
+                    三等奖：“吃喝玩乐大礼包”消费券+超人气证书
+                    </br>
+                    </br>
+                    <span style="color: #E53333;">每天刮刮乐！更多惊喜大奖等你来拿！</span>
+                </div>
+            </div>
+            <div class="text">
+                <div class="ways">•我是厨神</div>
+                <div class="neirong">
+                    <span style="color: #E53333; font-weight: bold;"><strong>【厨神来啦，我为厨神代言】</strong></span></br>
+                    1、投票资格
+                    <br>
+                    微信用户：关注“乐淘南昌官微”（ letaonc）才能进行投票。<br>
+                    2、投票方式<br>
+                    给乐淘南昌官微回复“大厨当道”，打开厨神投票页面，搜索选手姓名或编号，即可为指定选手投票。<br>
+                    3、投票票数<br>
+                    每人每天可投出最多3票，可以给同一个选手投票，也可以给不同的选手投。<br>
+                    4、注意事项<br>
+                    投票成功会弹出成功提示，否则为未成功。投票成功后刷新页面才能看到增加的票数。 <br>
+                    5、活动咨询<br>
+
+
+                    电话：<a href="tel://0791—88536337" target="_blank">0791—885363379</a>
+                    <br>
+                    传真：<a href="javascript:void(0);">0791—885363379</a>
+                    <br>
+                    QQ：<a target="_blank" href="http://wpa.qq.com/msgrd?v=3&amp;uin=3138917375&amp;site=qq&amp;menu=yes">3138917375</a>
+                    <br>
+
+                    本次活动解释权归江西风腾文化传媒有限公司所有。
+                    <br>
+
+                    <br>
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+    <div class="bot_main">
+        <ul>
+            <li><a href="@Url.Action("index","home")"><img src="~/Content/images/i1.png"><span class="txt">首页</span></a></li>
+            <li><a href="@Url.Action("index", "home", new { tp=1})"><img src="~/Content/images/i3.png"><span class="txt">排名</span></a></li>
+            <li><a href="@Url.Action("enroll","home")"><img src="~/Content/images/i11.png"><span class="txt">报名</span></a></li>
+            <li class="ico_4"><a href="#"><img src="~/Content/images/i4.png"><span class="txt">刮奖</span></a></li>
+        </ul>
+    </div>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

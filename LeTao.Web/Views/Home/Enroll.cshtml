@@ -1,0 +1,170 @@
+﻿@model LeTao.Web.Models.ModelEnroll
+@{
+    ViewBag.Title = "报名";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="apply">
+    <p>
+        报名处</p>
+    <div class="blank10">
+    </div>
+    @using (Html.BeginForm("Enroll", "Home", FormMethod.Post, new { id = "EnrollForm", enctype = "multipart/form-data" }))
+    {
+
+        @Html.HiddenFor(m => m.MaxPhotoUploadNumber)
+        <dl class="clearfix">
+            <dt>姓名:</dt>
+            <dd>
+                @Html.TextBoxFor(m => m.userName, new { @class = "input_txt", placeholder = "请输入姓名" })
+            </dd>
+            <dt style="margin-left: 2rem;"></dt>
+        </dl>
+        <dl class="clearfix">
+            <dt>联系电话:</dt>
+            <dd>
+                @Html.TextBoxFor(m => m.mobile, new { @class = "input_txt", placeholder = "请输入您的真实手机号" })
+            </dd>
+        </dl>
+        <dl class="clearfix">
+            <dt>职业:</dt>
+            <dd>
+                @Html.TextBoxFor(m => m.jobName, new { @class = "input_txt", placeholder = "请输入职业" })
+            </dd>
+        </dl>
+        <dl class="upload clearfix">
+            <dt>上传照片<br>
+                1-5张:</dt>
+            <dd class="upload_area clearfix">
+                <ul id="imglist" class="post_imglist">
+                </ul>
+                <div class="upload_btn">
+                    <div class="fileHide">
+                        <input type="file" name="upload0" id="upload0" accept="image/jpeg,image/gif,image/png" capture="camera" />
+                        <input type="file" name="upload1" id="upload1" accept="image/jpeg,image/gif,image/png" capture="camera" />
+                        <input type="file" name="upload2" id="upload2" accept="image/jpeg,image/gif,image/png" capture="camera" />
+                        <input type="file" name="upload3" id="upload3" accept="image/jpeg,image/gif,image/png" capture="camera" />
+                        <input type="file" name="upload4" id="upload4" accept="image/jpeg,image/gif,image/png" capture="camera" />
+                    </div>
+                    @*<input type="file" name="test1[]" id="upload_image" value="图片上传" accept="image/jpeg,image/gif,image/png" capture="camera" multiple>*@
+                    <input type="button" id="btnUploadFile" />
+                </div>
+            </dd>
+        </dl>
+        <dl class="clearfix">
+            <dt>备注:</dt>
+            <dd>
+                @Html.TextAreaFor(m => m.remarks, new { placeholder = "请输入备注", @class = "textarea", rows = "2" })
+            </dd>
+        </dl>
+        <div style="color: #EC6941; font-size: 16px; padding: 0 15px 15px 15px; line-height: 24px;
+            font-weight: bolder;">
+            若在线报名失败，可以将报名信息：姓名+联系方式+描述+照片（2~5张，至少2张）发给我们：qq:3138917375</div>
+        <div class="btn_box">
+            <input type="submit" name="signup" class="button" value="确认报名">
+        </div>
+        <div class="blank10">
+        </div>
+    }
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('#btnUploadFile').click(function () {
+            var nn = $("#imglist").find("li").length;
+            if (nn <= 0) {
+                $("#upload0").trigger('click');
+            }
+            else if (nn == 1) {
+                $("#upload1").trigger('click');
+            }
+            else if (nn == 2) {
+                $("#upload2").trigger('click');
+            }
+            else if (nn == 3) {
+                $("#upload3").trigger('click');
+            }
+            else {
+                $("#upload4").trigger('click');
+            }
+
+
+        })
+
+        //begin
+        $('#upload0,#upload1,#upload2,#upload3,#upload4').change(function () {
+            // alert($(this).attr('name'));
+            var maxPhotoUploadNumber = $("#MaxPhotoUploadNumber").val();
+            var imgcount = 0;
+            var file = this.files[0];
+            if (this.files && file) {
+                if ($("#imglist").find("li").length >= maxPhotoUploadNumber) {
+                    alert("最多上传" + maxPhotoUploadNumber + "张照片");
+                    return;
+                }
+                else if (!file.type.match(/image\/.*/i)) {
+                    alert("请选择一张图片");
+                    return;
+                }           
+                else {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $("#divPhoto img").attr("src", e.target.result);
+
+                        //--------------
+                        $("#imglist").append('<li><span class="pic_time"><span class="p_img"></span><em>50%</em></span></li>');
+                        $("#imglist").find("li:last-child").html('<span class="del"></span><img class="wh60" src="' + e.target.result + '"/><input type="hidden" id="file'
+                        + imgcount
+                        + '" name="fileup[]" value="'
+                        + file + '">');
+                        // $("#imglist").append('<input type="file" name="upload' + (imgcount + 1) + '" accept="image/jpeg,image/gif,image/png" />')
+
+
+                        $(".del").on("click", function () {
+                            $(this).parent('li').remove();
+                            $("#upload_image").show();
+                        });
+
+                        imgcount++;
+                        //--------------
+                    }
+                    reader.readAsDataURL(file);
+                }
+            }
+        });
+        //end
+
+        //submit begin
+        $("#EnrollForm").submit(function () {
+            if ($('#userName').val().length <= 0) {
+                alert("请输入姓名");
+                return false;
+            }
+
+            var telreg = /^1[3|4|5|7|8][0-9]\d{8}$|^\d{8}$/;
+            if ($('#mobile').val().length <= 0) {
+                alert("请输入您的真实手机号");
+                return false;
+            }
+            if (!telreg.test($('#mobile').val())) {
+                alert("请输入正确的手机号！");
+                return false;
+            }
+            if ($('#jobName').val().length <= 0) {
+                alert("请输入职业");
+                return false;
+            }
+
+            var imgLen = $("#imglist").find("li").length;
+            if (imgLen == null || imgLen == '' || imgLen == undefined || imgLen == 'undefined' || imgLen < 1) {
+                alert('请上传1张以上图片');
+                return false;
+            }
+
+
+
+        })
+        //submit end
+
+    })
+
+</script>

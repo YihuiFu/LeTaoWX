@@ -1,0 +1,73 @@
+﻿@using System.Data;
+@model DataTable
+@{
+    ViewBag.Title = "详细页";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content" style="padding-top:20px;">
+    <div class="detial_box">
+        @if (Model != null && Model.Rows.Count > 0)
+        {
+            foreach (DataRow item in Model.Rows)
+            {
+                <input type="hidden" value="@item["userID"].ToString()" id="txtUserID" />
+                <p class="num clearfix">
+                    <span class="fl" id="baby_info" itid_id="352" data-rule_id="503" data-vote_num="1">&nbsp;@item["ID"].ToString()号&nbsp;@item["userName"].ToString()</span>
+                    <span class="fr">票数：<span id="piaoshu">@item["totalVotes"].ToString()</span></span>
+                </p>
+            }
+        }
+
+        @{
+            DataTable dt_ImgList = (DataTable)ViewData["ImgList"];
+            if (dt_ImgList != null && dt_ImgList.Rows.Count > 0)
+            {
+                foreach (DataRow item in dt_ImgList.Rows)
+                {
+                    if (item["imgName"] != null)
+                    {
+                        <img src="~/Images/@(item["imgName"].ToString())" alt="">
+                    }
+
+                }
+            }
+
+        }
+
+
+    </div>
+    <div class="abtn_box">
+        <a href="javascript:void(0);" class="a_btn toupiao" id="aBtnVote">我要投票</a>
+        <a href="@Url.Action("Enroll","Home")" class="a_btn">我也来参加</a>
+        <a href="@Url.Action("index","Home")" class="a_btn">点击查看更多</a>
+    </div>
+</section>
+
+
+<script type="text/javascript">
+    $(function () {
+        $('#aBtnVote').click(function () {
+            var userID = $('#txtUserID').val();
+            $.ajax({
+                url: "@Url.Action("UpdateVotesCount", "home")",
+                type: "POST",
+                dataType: "json",
+                data: { userID: userID },
+                success: function (data) {
+                    if (data.Flag == 1) {
+                        $('#piaoshu').html(parseInt($('#piaoshu').html()) + 1);
+                        alert("谢谢您的参与！");
+                    }
+                    
+                    else {
+                        alert(data.Message);
+                    }
+                },
+                error: function (a, b, c) {
+                    alert(b);
+                }
+            })
+        })
+    })
+</script>

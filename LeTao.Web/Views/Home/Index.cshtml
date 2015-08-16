@@ -1,0 +1,132 @@
+﻿@using System.Data
+@model DataTable
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="num_box">
+    <a href="@Url.Action("enroll","home")" class="join_us"></a> 
+    <ul class="num_box_ul">
+        <li><span class="text">已报名</span> <span>@ViewBag.enrollNum</span> </li>
+        <li><span class="text">投票人次</span> <span>@ViewBag.voteNum</span> </li>
+        <li><span class="text">访问量</span> <span>@ViewBag.TotalVisitedNum</span> </li>
+    </ul>
+</div>
+<div class="search">
+    <form action="" id="search_form" method="post">
+        <input type="hidden" name="formhash" value="69acdb8d">
+        <input type="hidden" name="vid" value="1">
+        <div class="search_con">
+            <div class="btn">
+                <input type="submit" name="seachid" id="searchBtn" value="搜索">
+            </div>
+            <div class="text_box">
+                <input type="search" id="searchText" value="" name="keyword" placeholder="搜名字或编号"
+                       autocomplete="off">
+            </div>
+        </div>
+    </form>
+</div>
+<section class="content">
+    <ul class="text_a clearfix" style="text-align:center;">
+        <li class="active">@Html.ActionLink("最新参赛", "index", "home", new { tp = 0 }, null)</li>
+        <li>@Html.ActionLink("投票排行", "index", "home", new { tp = 1 }, null)</li>
+    </ul>
+
+    <div class="blank5"></div>
+    <ul class="list_box div1 clearfix">
+        @if (Model != null && Model.Rows.Count > 0)
+        {
+            foreach (System.Data.DataRow item in Model.Rows)
+            {
+                <li>
+                    <div>
+                        <i class="number">@item["ID"]号</i>
+                        <a href="@Url.Action("detail", "home", new { userid = item["userID"].ToString() })" class="img">
+                            <img src="~/Images/@(item["userImage"].ToString())" alt="">
+                        </a>
+                        <div class="clearfix">
+                            <p>@item["userName"].ToString()<br><span id="piaoshu">@item["totalVotes"]</span>票</p>
+                            <input type="hidden" name="hideUserID" value="@item["userID"]" />
+                            <a href="javascript:void(0);" class="vote">投票</a>
+                        </div>
+                    </div>
+                </li>
+            }
+        }
+
+
+
+    </ul>
+
+
+    <div class="pagination clearfix">
+        <input type="hidden" id="pageCount" value="@ViewBag.pageCount" />
+        <ul>
+            @for (int i = 0; i < (int)ViewBag.pageCount; i++)
+            {
+
+                if (ViewBag.tp != null && ViewBag.tp == 1)
+                {
+                    <li><a href="@Url.Action("index", "home", new { page = i + 1, tp = 1 })">@(i + 1)</a></li>
+                }
+                else
+                {
+                    <li><a href="@Url.Action("index", "home", new { page = i + 1 })">@(i + 1)</a></li>
+                }
+
+
+            }
+
+            @*<li><a href="2">2</a></li>
+                <li><a href="3">3</a></li>
+                <li><a href="4">4</a></li>
+                <li><a href="5">5</a></li>
+                <li><a href="6">6</a></li>
+                <li><a href="2">&gt;</a></li>
+                <li><a href="2">&gt;&gt;</a></li>*@
+        </ul>
+    </div>
+</section>
+
+<script type="text/javascript">
+    $(function () {
+        $('#searchBtn').click(function () {
+            var url = "@Url.Action("index", "home")";
+            var key = $('#searchText').val();
+            if (key == null || key == "" || key == undefined) {
+                alert("请输入关键词搜索");
+                return;
+            }
+            else {
+                window.location.href = url + "?keyword=" + key;
+            }
+        });
+
+        $('.vote').click(function () {
+            var userID = $(this).parent().find("input[name='hideUserID']").val();
+            $.ajax({
+                url: "@Url.Action("UpdateVotesCount", "home")",
+                type: "POST",
+                dataType: "json",
+                data: { userID: userID },
+                success: function (data) {
+                    if (data.Flag == 1) {
+                        $('#piaoshu').html(parseInt($('#piaoshu').html()) + 1);
+                        alert("谢谢您的参与！");
+                    }
+
+                    else {
+                        alert(data.Message);
+                    }
+                },
+                error: function (a, b, c) {
+                    alert(b);
+                }
+            })
+        })
+
+
+
+    })
+
+</script>
